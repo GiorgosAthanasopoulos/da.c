@@ -3,15 +3,17 @@
 
 #define DA_DEFAULT_CAPACITY 10
 
-typedef enum DA_Type {
-  INT,
+typedef enum DA_Type
+{
+    INT,
 } DA_Type;
 
-typedef struct DA {
-  void **data;
-  int size;
-  int capacity;
-  DA_Type type;
+typedef struct DA
+{
+    void **data;
+    int size;
+    int capacity;
+    DA_Type type;
 } DA;
 
 DA *da_init_cap(DA_Type type, int capacity);
@@ -50,6 +52,6 @@ void da_debug_print(DA *da);
 void da_debug_print_elem(DA *da, int index);
 
 void da_data_free(DA *da);
-void da_free(DA *da);
+void da_free(DA **da);
 
 #endif // DYNAMIC_ARRAY_H
