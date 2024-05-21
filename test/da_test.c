@@ -1,5 +1,6 @@
 #include <assert.h>
 
+#define DA_DEBUG_PRINT
 #include "../src/da.h"
 
 void test_init()
@@ -467,14 +468,12 @@ void test_remove()
 
     assert(da);
     assert(da->data);
-    // TODO: remove after implementing remove
-    // assert(da->size == 2);
+    assert(da->size == 2);
     assert(da->capacity == DA_DEFAULT_CAPACITY);
     assert(da->type == INT);
 
-    // TODO: remove after implementing remove
-    // assert(res == 2);
-    // assert((int *)da_get(da, 1) == 3);
+    assert(res == 2);
+    assert((int *)da_get(da, 1) == 3);
 
     da_free(&da);
 }
