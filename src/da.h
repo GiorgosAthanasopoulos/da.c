@@ -42,6 +42,7 @@ void *da_pop(DA *da);
 void *da_remove(DA *da, int index);
 
 void da_clear(DA *da);
+void da_clear_free(DA *da);
 void da_clear_shrink_cap(DA *da, int new_capacity);
 void da_clear_shrink(DA *da);
 

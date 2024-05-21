@@ -117,7 +117,7 @@ void da_shrink_to_fit(DA *da) {
     return;
   }
 
-  // TODO:
+  da_resize(da, da->size);
 }
 
 void da_resize(DA *da, int new_capacity) {
@@ -125,7 +125,14 @@ void da_resize(DA *da, int new_capacity) {
     return;
   }
 
-  // TODO:
+  if (new_capacity < da->size) {
+    return;
+  }
+
+  da->capacity = new_capacity;
+  void **data_backup = da->data;
+  da_data_malloc(da);
+  da->data = data_backup;
 }
 
 void da_swap(DA *da, DA *other) {
@@ -219,6 +226,18 @@ void da_clear(DA *da) {
   da->size = 0;
 }
 
+void da_clear_free(DA *da) {
+  if (!da) {
+    return;
+  }
+  if (!da->data) {
+    return;
+  }
+  da_clear(da);
+  da_data_free(da);
+  da_resize(da, DA_DEFAULT_CAPACITY);
+}
+
 void da_clear_shrink_cap(DA *da, int new_capacity) {
   if (!da) {
     return;
@@ -229,6 +248,7 @@ void da_clear_shrink_cap(DA *da, int new_capacity) {
   }
   if (new_capacity == 0) {
     da_clear(da);
+    da_resize(da, DA_DEFAULT_CAPACITY);
     return;
   }
 
