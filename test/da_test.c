@@ -597,7 +597,7 @@ void test_free() {
   assert(da->type == INT);
 
   da_free(da);
-  // FIXME: assert fails even though we set da to NULL in da_free
+  // FIXME: assertion !da fails even though we set da to NULL in da_free
   // assert(!da);
 }
 
