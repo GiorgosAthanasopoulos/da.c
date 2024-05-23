@@ -401,13 +401,14 @@ void test_insert()
     da_append(da, (void *)3);
     da_insert(da, 0, (void *)item);
 
+    int front = (int)da_front(da);
+
     assert(da);
     assert(da->data);
-    assert(da->size == 3);
+    assert(da->size == 4);
     assert(da->capacity == DA_DEFAULT_CAPACITY);
     assert(da->type == INT);
-    // TODO: remove after implementing insert
-    // assert((int *)da_front == item);
+    assert(front == item);
 
     da_free(&da);
 }
@@ -531,7 +532,7 @@ void test_clear_shrink()
 
     assert(da);
     assert(da->data);
-    assert(da->size == 3);
+    assert(da->size == 0);
     assert(da->capacity == DA_DEFAULT_CAPACITY);
     assert(da->type == INT);
 
@@ -563,7 +564,7 @@ void test_clear_shrink_cap()
 
     assert(da);
     assert(da->data);
-    assert(da->size == 3);
+    assert(da->size == 0);
     assert(da->capacity == new_capacity);
     assert(da->type == INT);
 

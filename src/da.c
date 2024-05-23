@@ -53,7 +53,12 @@ void da_data_malloc(DA *da)
         return;
     }
 
-    // FIXME: memory leak when da->data is already malloc'ed
+    if (da->data)
+    {
+        // FIXME: free(): double free detected in tcache 2
+        // free(da->data);
+        da->data = NULL;
+    }
 
     switch (da->type)
     {
@@ -204,7 +209,11 @@ void da_resize(DA *da, int new_capacity)
     da->capacity = new_capacity;
     void **data_backup = da->data;
     da_data_malloc(da);
-    da->data = data_backup;
+
+    for (int i = 0; i < da->size; ++i)
+    {
+        da->data[i] = data_backup[i];
+    }
 }
 
 void da_swap(DA *da, DA *other)
@@ -221,10 +230,13 @@ void da_swap(DA *da, DA *other)
     }
 
     int tmp_capacity = da->capacity;
+    int tmp_size = da->size;
     void **tmp_data = da->data;
     da->capacity = other->capacity;
+    da->size = other->size;
     da->data = other->data;
     other->capacity = tmp_capacity;
+    other->size = tmp_size;
     other->data = tmp_data;
 }
 
@@ -288,7 +300,33 @@ void da_insert(DA *da, int index, void *item)
         return;
     }
 
-    // TODO: implement insert
+    void **new_data;
+    switch (da->type)
+    {
+    case INT:
+        new_data = malloc(sizeof(int) * da->capacity);
+    }
+    if (!da->data)
+    {
+        fprintf(stderr, "da_insert(%p, %d, void *item) :: failed to allocate memory for new_data\n", da, index);
+        return;
+    }
+
+    int idx = 0;
+    for (int i = 0; i < index; ++i)
+    {
+        new_data[idx++] = da->data[i];
+    }
+    new_data[idx++] = item;
+    for (int i = index; i < da->size; ++i)
+    {
+        new_data[idx++] = da->data[i];
+    }
+
+    free(da->data);
+    da->data = new_data;
+
+    da->size++;
 }
 
 void *da_pop(DA *da)
@@ -403,14 +441,14 @@ void da_clear_shrink_cap(DA *da, int new_capacity)
         return;
     }
 
+    da->size = 0;
+    da->capacity = new_capacity;
+
     if (new_capacity == 0)
     {
-        da_clear(da);
-        da_resize(da, DA_DEFAULT_CAPACITY);
-        return;
+        da->capacity = DA_DEFAULT_CAPACITY;
     }
 
-    da->capacity = new_capacity;
     if (da->data)
     {
         free(da->data);
@@ -483,8 +521,11 @@ void da_data_free(DA *da)
         fprintf(stderr, "da_data_free(%p) :: da->data is NULL\n", da);
         return;
     }
+
     free(da->data);
     da->data = NULL;
+    da->size = 0;
+    da->capacity = 0;
 }
 
 void da_free(DA **da)
