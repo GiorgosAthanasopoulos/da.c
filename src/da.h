@@ -1,6 +1,19 @@
 #ifndef DYNAMIC_ARRAY_H
 #define DYNAMIC_ARRAY_H
 
+// == EXTENDING ==
+//
+// To extend the dynamic array with your own types follow these simple rules:
+//
+//   1. Firstly add a name for your new type to DA_Type enum definition. (e.g. FLOAT)
+//
+//   2. In da.c whenever u see a switch(da->type) implement the case of your new type. Look for previous implementations
+//   of other types for reference!
+//
+//   3. Profit!
+//
+// !== EXTENDING !==
+
 #define DA_DEFAULT_CAPACITY 10
 
 typedef enum DA_Type

@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -64,6 +65,7 @@ void da_data_malloc(DA *da)
     {
     case INT:
         da->data = malloc(sizeof(int) * da->capacity);
+        break;
     }
 }
 
@@ -273,9 +275,11 @@ void da_append(DA *da, void *item)
     switch (da->type)
     {
     case INT:
+        assert(sizeof((int)item) == sizeof(int));
         int **data = (int **)da->data;
         data[da->size++] = (int *)item;
         // da->data[da->size++] = (int *)item;
+        break;
     }
 }
 
@@ -304,7 +308,9 @@ void da_insert(DA *da, int index, void *item)
     switch (da->type)
     {
     case INT:
+        assert(sizeof((int)item) == sizeof(int));
         new_data = malloc(sizeof(int) * da->capacity);
+        break;
     }
     if (!da->data)
     {
@@ -371,6 +377,7 @@ void *da_remove(DA *da, int index)
     {
     case INT:
         new_data = malloc(sizeof(int) * da->capacity);
+        break;
     }
     if (!new_data)
     {
@@ -476,12 +483,13 @@ void da_debug_print(DA *da)
         return;
     }
 
-    switch (da->type)
+    for (int i = 0; i < da->size; ++i)
     {
-    case INT:
-        for (int i = 0; i < da->size; ++i)
+        switch (da->type)
         {
+        case INT:
             printf("%d ", (int *)da_get(da, i));
+            break;
         }
     }
     printf("\n");
@@ -505,6 +513,7 @@ void da_debug_print_elem(DA *da, int index)
     {
     case INT:
         printf("%d\n", (int *)da_get(da, index));
+        break;
     }
 }
 
