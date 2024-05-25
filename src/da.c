@@ -317,6 +317,11 @@ void da_insert(DA *da, int index, void *item)
         return;
     }
 
+    if (da->size == da->capacity)
+    {
+        da->capacity += DA_DEFAULT_CAPACITY;
+    }
+
     void **new_data;
     switch (da->type)
     {
