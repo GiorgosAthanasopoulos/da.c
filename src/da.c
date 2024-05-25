@@ -56,7 +56,7 @@ void da_data_malloc(DA *da)
 
     if (da->data)
     {
-        // FIXME: free(): double free detected in tcache 2
+        // FIXME: free(): double free detected in tcache 2 / memory leak
         // free(da->data);
         da->data = NULL;
     }
@@ -65,6 +65,9 @@ void da_data_malloc(DA *da)
     {
     case INT:
         da->data = malloc(sizeof(int) * da->capacity);
+        break;
+    case FLOAT:
+        da->data = malloc(sizeof(float) * da->capacity);
         break;
     }
 }
@@ -233,13 +236,16 @@ void da_swap(DA *da, DA *other)
 
     int tmp_capacity = da->capacity;
     int tmp_size = da->size;
+    DA_Type tmp_type = da->type;
     void **tmp_data = da->data;
     da->capacity = other->capacity;
     da->size = other->size;
     da->data = other->data;
+    da->type = other->type;
     other->capacity = tmp_capacity;
     other->size = tmp_size;
     other->data = tmp_data;
+    other->type = tmp_type;
 }
 
 void da_append(DA *da, void *item)
@@ -274,12 +280,19 @@ void da_append(DA *da, void *item)
 
     switch (da->type)
     {
-    case INT:
+    case INT: {
         assert(sizeof((int)item) == sizeof(int));
         int **data = (int **)da->data;
         data[da->size++] = (int *)item;
         // da->data[da->size++] = (int *)item;
         break;
+    }
+    case FLOAT: {
+        assert(sizeof(*(float *)item) == sizeof(float));
+        float **data = (float **)da->data;
+        data[da->size++] = (float *)item;
+        break;
+    }
     }
 }
 
@@ -310,6 +323,10 @@ void da_insert(DA *da, int index, void *item)
     case INT:
         assert(sizeof((int)item) == sizeof(int));
         new_data = malloc(sizeof(int) * da->capacity);
+        break;
+    case FLOAT:
+        assert(sizeof(*(float *)item) == sizeof(float));
+        new_data = malloc(sizeof(float) * da->capacity);
         break;
     }
     if (!da->data)
@@ -377,6 +394,9 @@ void *da_remove(DA *da, int index)
     {
     case INT:
         new_data = malloc(sizeof(int) * da->capacity);
+        break;
+    case FLOAT:
+        new_data = malloc(sizeof(float) * da->capacity);
         break;
     }
     if (!new_data)
@@ -490,6 +510,9 @@ void da_debug_print(DA *da)
         case INT:
             printf("%d ", (int *)da_get(da, i));
             break;
+        case FLOAT:
+            printf("%f ", *(float *)da_get(da, i));
+            break;
         }
     }
     printf("\n");
@@ -513,6 +536,9 @@ void da_debug_print_elem(DA *da, int index)
     {
     case INT:
         printf("%d\n", (int *)da_get(da, index));
+        break;
+    case FLOAT:
+        printf("%f\n", *(float *)da_get(da, index));
         break;
     }
 }
