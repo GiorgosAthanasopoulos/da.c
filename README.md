@@ -16,7 +16,7 @@ Dynamic Array implementation in c.
 - Copy `bin/libda.a` and `src/da.h` (and optionally specific implementations e.g. `src/da_int.h` for int dynamic array) into your project for use,
 - Compile with extra flags `-L. -lda` if your compilation command is run within the same directory as the libda.a file. Otherwise change accordingly.
 
-## API
+## API/Documentation
 
 Take a look at `src/da.h`/`src/da_int.h`/etc.
 

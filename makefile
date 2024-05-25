@@ -3,7 +3,7 @@ all:build
 # For extending, see TODOs.
 
 CC = gcc
-CFLAGS = -g -Wall -Wextra -pedantic -std=c99
+CFLAGS = -g -pedantic -std=c99 -Wall -Wextra
 CFLAGS_BUILD = $(CFLAGS) -fpic -c
 
 SRC_DIR = src
